@@ -44,43 +44,8 @@
 #endif
 
 #if defined(CONFIG_FB_S3C_LMS300)||defined(CONFIG_FB_S3C_S6D04D1)
-
-#ifdef CONFIG_LITE
-#ifndef CONFIG_PERFORMANCE
-#include "g3mod-lite.h"
+#include "android_logo_rgb16.h"
 #endif
-#endif
-
-#ifdef CONFIG_LITE
-#ifdef CONFIG_PERFORMANCE
-#ifndef CONFIG_ULTIMATE
-#include "g3mod-perf.h"
-#endif
-#endif
-#endif
-
-#ifdef CONFIG_LITE
-#ifdef CONFIG_PERFORMANCE
-#ifdef CONFIG_ULTIMATE
-#ifndef CONFIG_EXTREME
-#include "g3mod-ult.h"
-#endif
-#endif
-#endif
-#endif
-
-#ifdef CONFIG_LITE
-#ifdef CONFIG_PERFORMANCE
-#ifdef CONFIG_ULTIMATE
-#ifdef CONFIG_EXTREME
-#include "g3mod-ext.h"
-#endif
-#endif
-#endif
-#endif
-
-#endif
-
 
 #include "s3cfb.h"
 
@@ -141,11 +106,11 @@ static int s3cfb_draw_logo(struct fb_info *fb)
 	struct fb_fix_screeninfo *fix = &fb->fix;
 	struct fb_var_screeninfo *var = &fb->var;
 
-#if 0	//sm.kim: copy logo from bootloader's framebuffer
+#if 1	//sm.kim: copy logo from bootloader's framebuffer
 	s3cfb_display_logo(fbdev->fb[pdata->default_win]);
 #else
 	memcpy(fbdev->fb[pdata->default_win]->screen_base,
-		LOGO_RGB24, fix->line_length * var->yres);
+		LOGO_RGB16, fix->line_length * var->yres);
 #endif
 
 	return 0;
