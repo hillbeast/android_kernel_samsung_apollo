@@ -23,7 +23,7 @@ busybox insmod -f /lib/modules/fsr.ko
 busybox insmod -f /lib/modules/fsr_stl.ko
 busybox insmod -f /lib/modules/rfs_glue.ko
 busybox insmod -f /lib/modules/rfs_fat.ko
-busybox sh /stage1/fsdetect.sh >> /tmp/fsdetect.txt
+busybox sh /stage1/fsdetect.sh > /tmp/fsdetect.txt 2> /tmp/fsdetect.txt
 
 busybox umount /sys
 busybox umount /proc

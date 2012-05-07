@@ -9,15 +9,35 @@
 # Based upon Fugumod pre-init script, but much simpler
 #
 
+# Variables (to be changed for other devices)
 CONFIGDIR=/sdcard/Android/data/g3mod
 EFSDEV=stl4
 SYSTEMDEV=stl6
 DATADEV=stl7
 CACHEDEV=stl8
+SDCARDDEV=mmcblk0p1
+ALTSDCARDDEV=mmcblk0
 DATA2SDDEV=mmcblk0p2
 
+# Create directories
+mkdir -p /mnt/sdcard
+ln -s /mnt/sdcard /sdcard
+
+# Mount SD card
+mount -o utf8 -t vfat /dev/block/$SDCARDDEV /mnt/sdcard
+if test -z `df /mnt/sdcard/`; then
+	echo "SD Card $SDCARDDEV not found. Using alternative $ALTSDCARDDEV..."
+	mount -o utf8 -t vfat /dev/block/$ALTSDCARDDEV /mnt/sdcard
+	if test -z `df /mnt/sdcard`; then
+		echo "No SD card mounted. No settings will be saved"
+	fi
+else
+	echo "SD card $SDCARDDEV used for configuration"
+fi
+mkdir -p $CONFIGDIR
+
 # Detect Filesystems
-mkdir -p /mnt/tmp
+mkdir /mnt/tmp
 for DEVICE in $EFSDEV $SYSTEMDEV $DATADEV $CACHEDEV $DATA2SDDEV
 do
 	mount -o ro /dev/block/${DEVICE} /mnt/tmp
@@ -34,17 +54,32 @@ DATA2SDFS=`grep $DATA2SDDEV /tmp/fs.current | awk '{ print $2 }'`
 
 echo "Current filesystems:"
 cat /tmp/fs.current
-echo "---\n"
+echo "---"
 
-mkdir /efs
-mkdir /system
-mkdir /data
-mkdir /cache
+cp /tmp/fs.current $CONFIGDIR/
+
+# Set filesystems in system files
+for FILE in /init.rc /recovery.rc /etc/recovery.fstab
+do
+	echo "Editing $FILE"
+	cp $FILE /stage1/
+
+	sed -i "s|EFSFS|$EFSFS|" $FILE
+	sed -i "s|SYSTEMFS|$SYSTEMFS|" $FILE
+	sed -i "s|DATAFS|$DATAFS|" $FILE
+	sed -i "s|CACHEFS|$CACHEFS|" $FILE
+	sed -i "s|DATA2SDF]|$DATA2SDFS|" $FILE
+	sed -i "s|EFSDEV|$EFSDEV" $FILE
+	sed -i "s|SYSTEMDEV|$SYSTEMDEV|" $FILE
+	sed -i "s|DATADEV|$DATADEV|" $FILE
+	sed -i "s|CACHEDEV|$CACHEDEV|" $FILE
+	sed -i "s|DATA2SDDEV|$DATA2SDDEV|" $FILE
+
+	diff $FILE /stage1/FILE$
+done
+
+# Mount Data2SD partition
 mkdir /sdext
-
-mount -t $EFSFS     /dev/block/$EFSDEV     /efs
-mount -t $SYSTEMFS  /dev/block/$SYSTEMDEV  /system
-mount -t $DATAFS    /dev/block/$DATADEV    /data
-mount -t $CACHEFS   /dev/block/$CACHEDEV   /cache
 mount -t $DATA2SDFS /dev/block/$DATA2SDDEV /sdext
 
+umount /sdcard
