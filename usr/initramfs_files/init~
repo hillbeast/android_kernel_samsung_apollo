@@ -17,7 +17,6 @@ if busybox grep -q bootmode=2 /proc/cmdline ; then
 fi
 
 busybox cpio -i < ${load_image}
-busybox sh /stage1/initbbox.sh
 
 busybox umount /sys
 busybox umount /proc
