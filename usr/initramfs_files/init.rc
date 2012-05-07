@@ -179,7 +179,7 @@ on post-fs-data
 
     write /proc/apanic_console 1
 
-# create data/gps for GPS demon
+# create data/gps for GPS daemon
     mkdir /data/gps
     chown system /data/gps
     chmod 771 /data/gps
