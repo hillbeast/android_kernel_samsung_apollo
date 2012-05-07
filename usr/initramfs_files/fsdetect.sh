@@ -59,27 +59,35 @@ echo "---"
 cp /tmp/fs.current $CONFIGDIR/
 
 # Set filesystems in system files
-for FILE in /init.rc /recovery.rc /etc/recovery.fstab
+if test -f /recovery.rc; then
+	FILESTOEDIT="/recovery.rc /etc/recovery.fstab"
+else
+	FILESTOEDIT="/init.rc"
+fi
+ech "Will modify $FILESTOEDIT"
+for FILE in $FILESTOEDIT
 do
 	echo "Editing $FILE"
 	cp $FILE /stage1/
 
-	sed -i "s|EFSFS|$EFSFS|" $FILE
 	sed -i "s|SYSTEMFS|$SYSTEMFS|" $FILE
 	sed -i "s|DATAFS|$DATAFS|" $FILE
 	sed -i "s|CACHEFS|$CACHEFS|" $FILE
-	sed -i "s|DATA2SDF]|$DATA2SDFS|" $FILE
-	sed -i "s|EFSDEV|$EFSDEV" $FILE
+	sed -i "s|DATA2SDFS|$DATA2SDFS|" $FILE
 	sed -i "s|SYSTEMDEV|$SYSTEMDEV|" $FILE
 	sed -i "s|DATADEV|$DATADEV|" $FILE
 	sed -i "s|CACHEDEV|$CACHEDEV|" $FILE
 	sed -i "s|DATA2SDDEV|$DATA2SDDEV|" $FILE
 
-	diff $FILE /stage1/FILE$
+	diff /stage1/$FILE $FILE
 done
 
 # Mount Data2SD partition
 mkdir /sdext
 mount -t $DATA2SDFS /dev/block/$DATA2SDDEV /sdext
+
+# Mount EFS
+mkdir /efs
+mount -o rw -t $EFSFS /dev/block/$EFSDEV /efs
 
 umount /sdcard
