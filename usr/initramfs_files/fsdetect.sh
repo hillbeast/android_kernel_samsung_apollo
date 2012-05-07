@@ -64,7 +64,7 @@ if test -f /recovery.rc; then
 else
 	FILESTOEDIT="/init.rc"
 fi
-ech "Will modify $FILESTOEDIT"
+echo "Will modify $FILESTOEDIT"
 for FILE in $FILESTOEDIT
 do
 	echo "Editing $FILE"
