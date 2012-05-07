@@ -29,7 +29,6 @@ export LC_ALL
 if [ -z "$KBUILD_BUILD_VERSION" ]; then
 	if [ -r .version ]; then
 		VERSION=`cat .version`
-		VERSION="Test_Version_$VERSION"
 	else
 		VERSION=0
 		echo 0 > .version
@@ -44,7 +43,7 @@ else
 	TIMESTAMP=$KBUILD_BUILD_TIMESTAMP
 fi
 
-UTS_VERSION="G3MOD_#$VERSION"
+UTS_VERSION="#$VERSION"
 CONFIG_FLAGS=""
 if [ -n "$SMP" ] ; then CONFIG_FLAGS="SMP"; fi
 if [ -n "$PREEMPT" ] ; then CONFIG_FLAGS="$CONFIG_FLAGS PREEMPT"; fi
