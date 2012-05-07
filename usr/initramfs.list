@@ -10,6 +10,7 @@ dir /lib/modules 755 0 0
 dir /system 755 0 0
 dir /system/bin 755 0 0
 dir /sbin 755 0 0
+dir /tmp 777 0 0
 
 nod /dev/block/stl4 600 0 0 b 138 4
 nod /dev/block/stl6 600 0 0 b 138 6
@@ -39,6 +40,7 @@ file /stage1/init usr/initramfs_files/init 755 0 0
 file /stage1/boot.cpio usr/ramdisk.cpio 644 0 0
 file /stage1/recovery.cpio usr/ramdisk-recovery.cpio 644 0 0
 file /stage1/initbbox.sh usr/initramfs_files/initbbox.sh 755 0 0
+file /stage1/fsdetect.sh usr/initramfs_files/fsdetect.sh 755 0 0
 
 file /lib/modules/dhd.ko usr/initramfs_files/dhd.ko 755 0 0
 file /lib/modules/fsr.ko usr/initramfs_files/fsr.ko 755 0 0

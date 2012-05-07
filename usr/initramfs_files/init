@@ -3,8 +3,8 @@ _PATH="$PATH"
 export PATH=/sbin
 
 busybox cd /
-busybox date >>boot.txt
-exec >>boot.txt 2>&1
+busybox date >>/tmp/stage1.txt
+exec >>/tmp/stage1.txt 2>&1
 busybox rm init
 busybox mount -t proc proc /proc
 busybox mount -t sysfs sysfs /sys
@@ -17,11 +17,17 @@ if busybox grep -q bootmode=2 /proc/cmdline ; then
 fi
 
 busybox cpio -i < ${load_image}
+
 busybox sh /stage1/initbbox.sh
+busybox insmod -f /lib/modules/fsr.ko
+busybox insmod -f /lib/modules/fsr_stl.ko
+busybox insmod -f /lib/modules/rfs_glue.ko
+busybox insmod -f /lib/modules/rfs_fat.ko
+busybox sh /stage1/fsdetect.sh >> /tmp/fsdetect.txt
 
 busybox umount /sys
 busybox umount /proc
-busybox date >>boot.txt
+busybox date >>/tmp/stage1.txt
 busybox rm -fr /stage1 /dev/*
 export PATH="${_PATH}"
 exec /init
