@@ -59,12 +59,11 @@ echo "---"
 cp /tmp/fs.current $CONFIGDIR/
 
 # Set filesystems in system files
-if test -f /recovery.rc; then
-	FILESTOEDIT="/recovery.rc /etc/recovery.fstab"
+if test -f /etc/recovery.fstab; then
+	FILESTOEDIT="/etc/recovery.fstab"
 else
 	FILESTOEDIT="/init.rc"
 fi
-echo "Will modify $FILESTOEDIT"
 for FILE in $FILESTOEDIT
 do
 	echo "Editing $FILE"
