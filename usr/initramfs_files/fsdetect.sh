@@ -31,8 +31,10 @@ if test -z `df /mnt/sdcard/`; then
 	if test -z `df /mnt/sdcard`; then
 		echo "No SD card mounted. No settings will be saved"
 	fi
+	SDDEV=$ALTSDCARDDEV
 else
 	echo "SD card $SDCARDDEV used for configuration"
+	SDDEV=$SDCARDDEV
 fi
 mkdir -p $CONFIGDIR
 
@@ -62,9 +64,9 @@ cp /tmp/fs.current $CONFIGDIR/
 if test -f /etc/recovery.fstab; then
 	FILESTOEDIT="/etc/recovery.fstab"
 else
-	FILESTOEDIT="/init.rc"
+	FILESTOEDIT=""
 fi
-for FILE in $FILESTOEDIT
+for FILE in $FILESTOEDIT /init.rc
 do
 	echo "Editing $FILE"
 	cp $FILE /stage1/
@@ -77,6 +79,7 @@ do
 	sed -i "s|DATADEV|$DATADEV|" $FILE
 	sed -i "s|CACHEDEV|$CACHEDEV|" $FILE
 	sed -i "s|DATA2SDDEV|$DATA2SDDEV|" $FILE
+	sed -i "s|SDDEV|$SDDEV|" $FILE
 
 	diff /stage1/$FILE $FILE
 done

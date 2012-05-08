@@ -2,33 +2,44 @@
 _PATH="$PATH"
 export PATH=/sbin
 
-busybox cd /
-busybox date >>/tmp/stage1.txt
+busybox sh /stage1/initbbox.sh
+
+cd /
+date >>/tmp/stage1.txt
 exec >>/tmp/stage1.txt 2>&1
-busybox rm init
-busybox mount -t proc proc /proc
-busybox mount -t sysfs sysfs /sys
+rm init
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
 
 load_image=/stage1/boot.cpio
 
-if busybox grep -q bootmode=2 /proc/cmdline ; then
+if grep -q bootmode=2 /proc/cmdline ; then
 	# recovery boot
 	load_image=/stage1/recovery.cpio
 fi
 
-busybox cpio -i < ${load_image}
+if dmesg | grep S3C-Keypad | grep 102; then
+	echo "force normal boot"
+	load_image=/stage1/boot.cpio
+fi
 
-busybox sh /stage1/initbbox.sh
-busybox insmod -f /lib/modules/fsr.ko
-busybox insmod -f /lib/modules/fsr_stl.ko
-busybox insmod -f /lib/modules/rfs_glue.ko
-busybox insmod -f /lib/modules/rfs_fat.ko
-busybox sh /stage1/fsdetect.sh > /tmp/fsdetect.txt 2> /tmp/fsdetect.txt
+if dmesg | grep S3C-Keypad | grep 139; then
+	echo "force recovery boot"
+	load_image=/stage1/recovery.cpio
+fi
 
-busybox umount /sys
-busybox umount /proc
-busybox date >>/tmp/stage1.txt
-busybox rm -fr /stage1 /dev/*
+cpio -i < ${load_image}
+
+insmod -f /lib/modules/fsr.ko
+insmod -f /lib/modules/fsr_stl.ko
+insmod -f /lib/modules/rfs_glue.ko
+insmod -f /lib/modules/rfs_fat.ko
+sh /stage1/fsdetect.sh > /tmp/fsdetect.txt 2> /tmp/fsdetect.txt
+
+umount /sys
+umount /proc
+date >>/tmp/stage1.txt
+rm -fr /stage1 /dev/*
 export PATH="${_PATH}"
 exec /init
 
