@@ -39,6 +39,7 @@ fi
 mkdir -p $CONFIGDIR
 
 # Detect Filesystems
+echo "This file is safe to delete. It will only be generated again upon next boot" > /tmp/fs.current
 mkdir /mnt/tmp
 for DEVICE in $EFSDEV $SYSTEMDEV $DATADEV $CACHEDEV $DATA2SDDEV
 do
@@ -60,6 +61,28 @@ echo "---"
 
 cp /tmp/fs.current $CONFIGDIR/
 
+# --- Data2SD ---
+# Data2SD create mounts
+if test -z $DATA2SDFS; then
+	echo "No Data2SD partition located"
+	sed -i "s|DATA2SDMOUNTCODE|# Will not mount Data2SD|" /init.rc
+else
+	sed -i "s|DATA2SDMOUNTCODE|mount DATA2SDFS /dev/block/DATA2SDDEV /sd-ext nosuid nodev|" /init.rc
+	if test -f $CONFIGDIR/fs.data2sd; then
+		mkdir /intdata
+		mount -t $DATAFS /dev/block/$DATADEV /intdata
+		if test -z `cat $CONFIGDIR/fs.data2sd | grep "hybrid"`; then
+			echo "Data2SD will be used in Normal Mode"
+			DATADEV=$DATA2SDDEV
+		else
+			echo "Data2SD will be used in Hybrid Mode"
+			echo "Hybrid not implemented"
+		fi
+	else
+		echo "Data2SD partition located, but will not be used by kernel based Data2SD"	
+	fi
+fi
+
 # Set filesystems in system files
 if test -f /etc/recovery.fstab; then
 	FILESTOEDIT="/etc/recovery.fstab"
@@ -72,12 +95,12 @@ do
 	cp $FILE /stage1/
 
 	sed -i "s|SYSTEMFS|$SYSTEMFS|" $FILE
-	sed -i "s|DATAFS|$DATAFS|" $FILE
-	sed -i "s|CACHEFS|$CACHEFS|" $FILE
-	sed -i "s|DATA2SDFS|$DATA2SDFS|" $FILE
 	sed -i "s|SYSTEMDEV|$SYSTEMDEV|" $FILE
+	sed -i "s|DATAFS|$DATAFS|" $FILE
 	sed -i "s|DATADEV|$DATADEV|" $FILE
+	sed -i "s|CACHEFS|$CACHEFS|" $FILE
 	sed -i "s|CACHEDEV|$CACHEDEV|" $FILE
+	sed -i "s|DATA2SDFS|$DATA2SDFS|" $FILE
 	sed -i "s|DATA2SDDEV|$DATA2SDDEV|" $FILE
 	sed -i "s|SDDEV|$SDDEV|" $FILE
 
@@ -93,3 +116,4 @@ mkdir /efs
 mount -o rw -t $EFSFS /dev/block/$EFSDEV /efs
 
 umount /sdcard
+rm -rf /sdcard
