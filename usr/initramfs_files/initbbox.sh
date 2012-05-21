@@ -74,6 +74,7 @@
 /sbin/busybox ln -s /sbin/busybox /sbin/mkdir
 /sbin/busybox ln -s /sbin/busybox /sbin/mkfifo
 /sbin/busybox ln -s /sbin/busybox /sbin/mknod
+/sbin/busybox ln -s /sbin/busybox /sbin/mkfs.ext2
 /sbin/busybox ln -s /sbin/busybox /sbin/mkswap
 /sbin/busybox ln -s /sbin/busybox /sbin/mktemp
 /sbin/busybox ln -s /sbin/busybox /sbin/modprobe

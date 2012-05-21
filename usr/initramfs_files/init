@@ -10,6 +10,7 @@ exec >>/tmp/stage1.txt 2>&1
 rm init
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
+mknod /dev/zero c 1 5
 
 load_image=/stage1/boot.cpio
 
@@ -39,7 +40,7 @@ insmod -f /lib/modules/fsr.ko
 insmod -f /lib/modules/fsr_stl.ko
 insmod -f /lib/modules/rfs_glue.ko
 insmod -f /lib/modules/rfs_fat.ko
-sh /stage1/fsdetect.sh > /tmp/fsdetect.txt 2> /tmp/fsdetect.txt
+sh /stage1/fsdetect.sh >> /tmp/fsdetect.txt 2>> /tmp/fsdetect.txt
 
 umount /sys
 umount /proc

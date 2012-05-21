@@ -27,7 +27,7 @@ nod /dev/block/bml7 600 0 0 b 137 7
 nod /dev/block/bml8 600 0 0 b 137 8
 nod /dev/block/bml9 600 0 0 b 137 9
 nod /dev/block/mmcblk0 600 0 0 b 179 0
-nod /dev/block/mmcblk0p1 600 0 0 b 179 1
+nod /dev/block/mmcblk0p1 600 0 0 b 179 1-
 nod /dev/block/mmcblk0p2 600 0 0 b 179 2
 nod /dev/block/mmcblk0p3 600 0 0 b 179 3
 nod /dev/block/mmcblk0p4 600 0 0 b 179 4
