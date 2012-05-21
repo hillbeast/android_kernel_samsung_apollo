@@ -41,19 +41,5 @@ file /stage1/boot.cpio ../../ramdisk.cpio 644 0 0
 file /stage1/recovery.cpio ../../ramdisk-recovery.cpio 644 0 0
 file /stage1/initbbox.sh source/usr/initramfs_files/initbbox.sh 755 0 0
 file /stage1/fsdetect.sh source/usr/initramfs_files/fsdetect.sh 755 0 0
-
-file /lib/modules/dhd.ko source/usr/initramfs_files/dhd.ko 755 0 0
-file /lib/modules/fsr.ko source/usr/initramfs_files/fsr.ko 755 0 0
-file /lib/modules/fsr_stl.ko source/usr/initramfs_files/fsr_stl.ko 755 0 0
-file /lib/modules/modemctl.ko source/usr/initramfs_files/modemctl.ko 755 0 0
-file /lib/modules/onedram.ko source/usr/initramfs_files/onedram.ko 755 0 0
-file /lib/modules/param.ko source/usr/initramfs_files/param.ko 755 0 0
-file /lib/modules/rfs_fat.ko source/usr/initramfs_files/rfs_fat.ko 755 0 0
-file /lib/modules/rfs_glue.ko source/usr/initramfs_files/rfs_glue.ko 755 0 0
-file /lib/modules/s3c_g3d_openfimg.ko source/usr/initramfs_files/s3c_g3d_openfimg.ko 755 0 0
-file /lib/modules/Si4709_driver.ko source/usr/initramfs_files/Si4709_driver.ko 755 0 0
-file /lib/modules/storage.ko source/usr/initramfs_files/storage.ko 755 0 0
-file /lib/modules/svnet.ko source/usr/initramfs_files/svnet.ko 755 0 0
-file /lib/modules/tun.ko source/usr/initramfs_files/tun.ko 755 0 0
-file /lib/modules/vibrator-cm6.ko source/usr/initramfs_files/vibrator-cm6.ko 755 0 0
+file /stage1/modules.tar source/usr/initramfs_files/modules.tar 644 0 0
 

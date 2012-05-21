@@ -30,6 +30,11 @@ fi
 
 cpio -i < ${load_image}
 
+mkdir -p /lib/modules
+cd /lib/modules/
+tar xvf /stage1/modules.tar
+cd /
+
 insmod -f /lib/modules/fsr.ko
 insmod -f /lib/modules/fsr_stl.ko
 insmod -f /lib/modules/rfs_glue.ko
