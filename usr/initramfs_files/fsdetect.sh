@@ -10,7 +10,7 @@
 #
 
 # Variables (to be changed for other devices)
-CONFIGDIR=/sdcard/Android/data/g3mod
+CONFIGDIR=/sdcard/Android/data/kernel
 EFSDEV=stl4
 SYSTEMDEV=stl6
 DATADEV=stl7
@@ -63,17 +63,21 @@ cp /tmp/fs.current $CONFIGDIR/
 
 # --- Data2SD ---
 # Data2SD create mounts
+DATAMOUNTDEV=$DATADEV
+DATAMOUNTFS=$DATAFS
+
 if test -z $DATA2SDFS; then
 	echo "No Data2SD partition located"
 	sed -i "s|DATA2SDMOUNTCODE|# Will not mount Data2SD|" /init.rc
 else
 	sed -i "s|DATA2SDMOUNTCODE|mount DATA2SDFS /dev/block/DATA2SDDEV /sd-ext nosuid nodev|" /init.rc
 	if test -f $CONFIGDIR/fs.data2sd; then
-		mkdir /intdata
-		mount -t $DATAFS /dev/block/$DATADEV /intdata
+		mkdir /mnt/intdata
+		mount -t $DATAFS /dev/block/$DATADEV /mnt/intdata
 		if test -z `cat $CONFIGDIR/fs.data2sd | grep "hybrid"`; then
 			echo "Data2SD will be used in Normal Mode"
-			DATADEV=$DATA2SDDEV
+			DATAMOUNTDEV=$DATA2SDDEV
+			DATAMOUNTFS=$DATA2SDFS
 		else
 			echo "Data2SD will be used in Hybrid Mode"
 			echo "Hybrid not implemented"
@@ -96,10 +100,12 @@ do
 
 	sed -i "s|SYSTEMFS|$SYSTEMFS|" $FILE
 	sed -i "s|SYSTEMDEV|$SYSTEMDEV|" $FILE
-	sed -i "s|DATAFS|$DATAFS|" $FILE
-	sed -i "s|DATADEV|$DATADEV|" $FILE
+	sed -i "s|DATAMOUNTFS|$DATAMOUNTFS|" $FILE
+	sed -i "s|DATAMOUNTDEV|$DATAMOUNTDEV|" $FILE
 	sed -i "s|CACHEFS|$CACHEFS|" $FILE
 	sed -i "s|CACHEDEV|$CACHEDEV|" $FILE
+	sed -i "s|DATAFS|$DATAFS|" $FILE
+	sed -i "s|DATADEV|$DATADEV|" $FILE
 	sed -i "s|DATA2SDFS|$DATA2SDFS|" $FILE
 	sed -i "s|DATA2SDDEV|$DATA2SDDEV|" $FILE
 	sed -i "s|SDDEV|$SDDEV|" $FILE
